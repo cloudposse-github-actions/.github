@@ -1,4 +1,4 @@
-[![Banner][banner](banner/image.png)](https://cpco.io/homepage)
+[![Banner][banner]](https://cpco.io/homepage)
 [![Cloud Posse][logo]](https://cpco.io/homepage)
 [![README Header][readme_header_img]][readme_header_link]
 
@@ -37,7 +37,7 @@ We deliver 10x the value for a fraction of the cost of a full-time engineer. Our
 [![README Footer][readme_footer_img]][readme_footer_link]
 [![Beacon][beacon]][website]
 
-  [logo]: https://cloudposse.com/logo-300x69.svg
+  [banner]: banner/image.png?raw=true
   [docs]: https://cpco.io/docs?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/.github&utm_content=docs
   [website]: https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/.github&utm_content=website
   [github]: https://cpco.io/github?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/.github&utm_content=github
