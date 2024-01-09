@@ -4,20 +4,7 @@
 
 This organization hosts Cloud Posse's GitHub Actions. They are all permissively licensed (mostly APACHE2) and well-maintained, and [documented](https://docs.cloudposse.com/github-actions/).
 
-## We're a [DevOps Accelerator for Startups](https://cpco.io/homepage) (and Enterprises)
-We'll help you rapidly migrate to AWS using our proven strategy while advising you along the way so you can make informed decisions.
-
-* Own your infrastructure.
-* We build it.
-* You drive it.
-
-Work directly with our team of DevOps experts via email, slack, and zoom.
-
-We deliver 10x the value for a fraction of the cost of a full-time engineer. Our track record is not even funny. If you want things done right and you need it done FAST, then we're your best bet.
-
-[![README Header][readme_header_img]][readme_header_link]
-
-# Resources
+# Other Resources
 * [Weekly Office Hours](https://cloudposse.com/office-hours/)
 * [DevOps Slack Community](https://cloudposse.com/slack/) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
 * [Industry Newsletter](https://cloudposse.com/newsletter/)
