@@ -23,7 +23,6 @@ jobs:
       id: screenshot
       uses: cloudposse-github-actions/screenshot@init
       with:
-        # Your action's inputs
         url: "file://${{github.workspace}}/profile/banner/index.html"
         output: "profile/banner/image.png"
         viewportWidth: 2000
