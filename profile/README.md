@@ -1,6 +1,4 @@
 [![Banner][banner]](https://cpco.io/homepage)
-[![Cloud Posse][logo]](https://cpco.io/homepage)
-[![README Header][readme_header_img]][readme_header_link]
 
 ## Introduction
 
@@ -17,11 +15,7 @@ Work directly with our team of DevOps experts via email, slack, and zoom.
 
 We deliver 10x the value for a fraction of the cost of a full-time engineer. Our track record is not even funny. If you want things done right and you need it done FAST, then we're your best bet.
 
-# How it Works
-* [Reference Architecture](https://cloudposse.com/reference-architecture/)
-* [Our Toolchain](https://cloudposse.com/toolchain/)
-* [Getting Started](https://cloudposse.com/get-started/)
-* [FAQs](https://cloudposse.com/faq/)
+[![README Header][readme_header_img]][readme_header_link]
 
 # Resources
 * [Weekly Office Hours](https://cloudposse.com/office-hours/)
@@ -30,8 +24,6 @@ We deliver 10x the value for a fraction of the cost of a full-time engineer. Our
 * [YouTube Channel](https://www.youtube.com/playlist?list=PLhRztDM6Uvne8MUuwXrv2truMl6gVZ0D8)
 
 [![README Commercial Support][readme_commercial_support_img]][readme_commercial_support_link]
-
----
 
 
 [![README Footer][readme_footer_img]][readme_footer_link]
