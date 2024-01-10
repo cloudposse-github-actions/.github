@@ -1,9 +1,9 @@
 [![Banner][banner]](https://cpco.io/homepage)
 
-<table>
+<table width="100%">
 <tr>
 <td>
-## Our Projects
+<h2>Our Projects</h2>
 
 * [Terraform Modules](https://github.com/cloudposse)
 * [Terraform Components](https://github.com/cloudposse-terraform-components)
@@ -11,7 +11,7 @@
 * [GitHub Actions Documentation](https://docs.cloudposse.com/github-actions/)
 </td>
 <td>
-## Get Involved
+<h2> Get Involved</h2>
 
 * [Weekly Office Hours](https://cloudposse.com/office-hours/)
 * [DevOps Slack Community](https://cloudposse.com/slack/)
