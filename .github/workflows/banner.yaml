@@ -21,7 +21,7 @@ jobs:
 
     - name: Generate banner image
       id: screenshot
-      uses: cloudposse-github-actions/screenshot@init
+      uses: cloudposse-github-actions/screenshot@main
       with:
         url: "file://${{github.workspace}}/profile/banner/index.html"
         output: "profile/banner/image.png"
