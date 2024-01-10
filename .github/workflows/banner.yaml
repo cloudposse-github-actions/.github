@@ -25,8 +25,9 @@ jobs:
       with:
         url: "file://${{github.workspace}}/profile/banner/index.html"
         output: "profile/banner/image.png"
-        viewportWidth: 2000
-        viewportHeight: 800
+        # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview
+        viewportWidth: 1280
+        viewportHeight: 640
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       name: Commit artifact
