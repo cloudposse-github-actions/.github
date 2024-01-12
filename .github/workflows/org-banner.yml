@@ -1,4 +1,4 @@
-name: Banner
+name: GitHub Org Banner
 
 on:
   pull_request:
