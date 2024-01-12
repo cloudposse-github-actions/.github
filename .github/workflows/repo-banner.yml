@@ -33,6 +33,7 @@ jobs:
           "#desc": "${{ steps.metadata.outputs.repository_description }}"
         viewportWidth: 1280
         viewportHeight: 320
+        omitBackground: true
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       name: Commit artifact
