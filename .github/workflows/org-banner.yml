@@ -27,7 +27,7 @@ jobs:
         output: "profile/banner/image.png"
         # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview
         viewportWidth: 1280
-        viewportHeight: 640
+        viewportHeight: 370
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       name: Commit artifact

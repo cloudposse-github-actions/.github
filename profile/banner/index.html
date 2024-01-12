@@ -5,6 +5,25 @@
     <style>
     body {
       overflow: hidden;
+      min-width: 100vw;
+      min-height: 100vh;
+      color: #fff;
+      font-family: 'proxima-nova', sans-serif;
+      font-size: 12px;
+      background: transparent;
+    }
+
+    .filler{
+      flex-grow:1; 
+      text-align:center;
+    }
+
+
+    .highlight {
+      color: #ff9900;
+    }
+
+    .container {
       background-color: #000;
       background-image: linear-gradient(
           rgba(0, 0, 0, 0.0), 
@@ -13,23 +32,12 @@
       background-repeat: no-repeat;
       background-position: bottom right -2em;
       background-size: 80%;
-      min-width: 100vw;
-      min-height: 100vh;
-      color: #fff;
-      font-family: 'proxima-nova', sans-serif;
-      font-size: 12px;
-    }
-
-    .highlight {
-      color: #ff9900;
-    }
-
-    .container {
       display: flex;
       align-items: center;
       justify-content: center;
       width: 100%;
       height: 100%;
+      border-radius: 6px;
     }
 
     .banner {
@@ -42,7 +50,8 @@
     }
 
     .header {
-      margin-bottom: 3.5em;
+      margin-bottom: 0;
+      display: flex;
     }
 
     .logo {
@@ -58,39 +67,53 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      float: right;
       border: 1px solid #fff;
       border-radius: 12px;
       padding: 0.5em;
       font-size: 1.2em;
       margin-top: 0.2em;
+      max-width: 28vw;
+      width: 100%;
     }
 
     .github-partner img {
-      max-width: 10vw;
+      max-width: 27%;
+      margin-right: 0.2em;
     }
+
 
     .subheader {
       clear: both;
-      display: none;
     }
 
     .subheader h2 {
       font-size: 1.4em;
       color: #cccccc6e;
+      margin: 0;
+    }
+
+    .project {
+      display: flex;
+      height: 100%;
+      margin-top: 1em;
     }
 
     .project h1 {
-      font-size: 2.5em;
+      font-size: 1.6em;
       color: #fff;
-      height: 25%;
       display: flex;
-      align-items: end;
+      align-items: start;
+      margin: 0;
     }
 
     .project .description {
       color: #d9d9d9;
       font-size: 1.2em;
+      display: initial;
+    }
+   
+    #name {
+      width: 46%;
     }
 
     .project .description strong {
@@ -102,6 +125,7 @@
       margin-top: 1em;
       display: block;
       color: #cccccc8c;
+      bottom: 0;
     }
 
     </style>
@@ -111,10 +135,11 @@
       <div class="banner">
         <div class="header">
           <div class="logo"><img src="https://cloudposse.com/wp-content/uploads/2019/01/cloudposse-white.svg"/></div>
+          <div class="filler"></div>
           <div class="github-partner"><img src="github-logo.svg"/> Verified Partner</div>
         </div>
         <div class="subheader">
-          <h2>We’re a <span class="highlight">DevOps Accelerator</span> for <strong>Startups and Enterprises</strong></h1>
+          <h2>DevOps Accelerator</h2>
         </div>
         <div class="project">
           <h1 id="name">GitHub Actions</h1>
