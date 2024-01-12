@@ -42,9 +42,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         commit_message: "chore: update repo banner image"
-        commit_user_name: screenshot-action 📼
+        commit_user_name: screenshot-action 📷
         commit_user_email: actions@github.com
-        commit_author: screenshot-action 📼 <actions@github.com>
+        commit_author: screenshot-action 📷 <actions@github.com>
         file_pattern: 'banner/*.png'
 
     - name: Add Image to Step Summary
