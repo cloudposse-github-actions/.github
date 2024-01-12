@@ -28,6 +28,7 @@ jobs:
         # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview
         viewportWidth: 1280
         viewportHeight: 370
+        omitBackground: true
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       name: Commit artifact
