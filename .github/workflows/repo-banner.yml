@@ -32,7 +32,7 @@ jobs:
           "#name": "${{ steps.metadata.outputs.repository_name }}"
           "#desc": "${{ steps.metadata.outputs.repository_description }}"
         viewportWidth: 1280
-        viewportHeight: 640
+        viewportHeight: 320
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       name: Commit artifact
