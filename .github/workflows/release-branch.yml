@@ -1,0 +1,134 @@
+---
+name: release-branch
+on:
+  push:
+    branches:
+      - main
+      - release/**
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - 'examples/**'
+      - 'test/**'
+      - 'README.*'
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ci-codeowners:
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: mszostok/codeowners-validator@v0.7.4
+        # Pull request from a fork
+        name: "Validate CODEOWNERS"
+        with:
+          checks: "syntax,duppatterns"
+          owner_checker_allow_unowned_patterns: "false"
+
+      - uses: mszostok/codeowners-validator@v0.7.4
+        # Main branch / Pull request from the same repo
+        name: "Validate CODEOWNERS"
+        with:
+          # For now, remove "files" check to allow CODEOWNERS to specify non-existent
+          # files so we can use the same CODEOWNERS file for Terraform and non-Terraform repos
+          #   checks: "files,syntax,owners,duppatterns"
+          checks: "syntax,duppatterns"
+          owner_checker_allow_unowned_patterns: "false"
+
+  ci-readme:
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Generate readme
+        shell: bash
+        run: |
+          make init
+          make readme/build
+
+      - name: Check readme
+        id: readme_diff
+        shell: bash
+        run: git diff --exit-code
+        continue-on-error: true
+
+      - name: Auto-update README.md for bot pull requests
+        id: auto_commit
+        if: |
+          steps.readme_diff.outcome == 'failure' && 
+          startsWith(github.ref, 'renovate/')
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git commit -a -m "Auto-update README.md"
+          git push
+
+      - name: Status check
+        shell: bash
+        run: |
+          git diff --exit-code && success="true" || success="false"
+          if [ "$success" = "false" ]; then
+            echo "README.md is outdated. Please run the following commands locally and push the file:"
+            echo "  make init"
+            echo "  make readme"
+            exit 1
+          fi
+
+  release-controller:
+    needs: [ci-readme, ci-codeowners]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Fetch pull request for the given ref
+        id: get-pull-request
+        uses: 8BitJonny/gh-get-current-pr@2.2.0
+        with:
+          sha: ${{ github.sha }}
+
+      - name: Check duplicate
+        id: check-duplicate
+        run: |
+          latest_hash=$(git rev-parse ${{ github.ref_name }})
+          tags=$(git tag --contains "$latest_hash")
+          if [[ -n $tags ]]; then
+            echo "duplicate=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "duplicate=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Do release
+        if: steps.check-duplicate.outputs.duplicate == 'false'
+        id: release
+        uses: release-drafter/release-drafter@v5
+        with:
+          publish: ${{ (github.ref_name == 'main' || github.ref_name == 'master') && !contains(steps.get-pull-request.outputs.pr_labels, 'no-release') }}
+          config-name: 'auto-release.yml'
+          commitish: ${{ github.ref_name }}
+
+      - name: Verify release  # Workaround for https://github.com/release-drafter/release-drafter/issues/1313
+        if: steps.check-duplicate.outputs.duplicate == 'false'
+        shell: bash
+        run: |
+          echo 'Checking release id not empty: "${{ steps.release.outputs.id }}"'
+          ! test -z "${{ steps.release.outputs.id }}"
+
+  major-release-tagger:
+    needs: [release-controller]
+    steps:
+      - uses: cloudposse/github-action-major-release-tagger@v1
+
+  release-branch-manager:
+    needs: [release-controller]
+    steps:
+      - uses: cloudposse/github-action-release-branch-manager@v1
