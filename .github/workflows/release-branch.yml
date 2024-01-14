@@ -22,6 +22,7 @@ concurrency:
 
 jobs:
   ci-codeowners:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -44,6 +45,7 @@ jobs:
           owner_checker_allow_unowned_patterns: "false"
 
   ci-readme:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -83,6 +85,7 @@ jobs:
           fi
 
   release-controller:
+    runs-on: ubuntu-latest
     needs: [ci-readme, ci-codeowners]
     steps:
       - name: Checkout
@@ -124,11 +127,13 @@ jobs:
           ! test -z "${{ steps.release.outputs.id }}"
 
   major-release-tagger:
+    runs-on: ubuntu-latest
     needs: [release-controller]
     steps:
       - uses: cloudposse/github-action-major-release-tagger@v1
 
   release-branch-manager:
+    runs-on: ubuntu-latest
     needs: [release-controller]
     steps:
       - uses: cloudposse/github-action-release-branch-manager@v1
