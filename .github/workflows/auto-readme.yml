@@ -20,6 +20,10 @@ on:
     # Update README.md nightly at 4am UTC
     - cron: "0 4 * * *"
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -65,9 +69,10 @@ jobs:
       - name: Create Pull Request
         # This action will not create or change a pull request if there are no changes to make.
         # If a PR of the auto-update/readme branch is open, this action will just update it, not create a new PR.
-        uses: cloudposse/actions/github/create-pull-request@0.30.0
+        id: pr
+        uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Update README.md and docs
           title: Update README.md and docs
           body: |-
@@ -84,3 +89,10 @@ jobs:
             auto-update
             no-release
             readme
+
+      - name: Check outputs
+        if: ${{ steps.pr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.pr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+          cat README.md  >> $GITHUB_STEP_SUMMARY
