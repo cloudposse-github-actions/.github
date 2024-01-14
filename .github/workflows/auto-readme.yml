@@ -65,7 +65,8 @@ jobs:
       - name: Create Pull Request
         # This action will not create or change a pull request if there are no changes to make.
         # If a PR of the auto-update/readme branch is open, this action will just update it, not create a new PR.
-        uses: cloudposse/actions/github/create-pull-request@0.30.0
+        id: pr
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}
           commit-message: Update README.md and docs
@@ -84,3 +85,10 @@ jobs:
             auto-update
             no-release
             readme
+
+      - name: Check outputs
+        if: ${{ steps.pr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.pr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+          cat README.md  >> $GITHUB_STEP_SUMMARY

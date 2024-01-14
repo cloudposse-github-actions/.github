@@ -53,6 +53,17 @@ jobs:
       - name: Generate readme
         shell: bash
         run: |
+          if [ ! -f README.yaml ]; then
+            echo "Project does not have a README.yaml. Skipping..."
+            exit 0
+          fi
+
+          # A Makefile is required for build-harness and rebuilding the README.md from the README.yaml and rebuilding the README.md from the README.yaml and rebuilding the README.md from the README.yaml and rebuilding the README.md from the README.yaml
+          if [ ! -f Makefile ]; then
+            echo "Project does not have a Makefile";
+            exit 1
+          fi
+
           make init
           make readme/build
 
