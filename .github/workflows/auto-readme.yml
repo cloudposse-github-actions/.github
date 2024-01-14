@@ -20,6 +20,10 @@ on:
     # Update README.md nightly at 4am UTC
     - cron: "0 4 * * *"
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -68,7 +72,7 @@ jobs:
         id: pr
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Update README.md and docs
           title: Update README.md and docs
           body: |-
