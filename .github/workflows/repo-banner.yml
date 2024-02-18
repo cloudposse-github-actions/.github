@@ -27,7 +27,7 @@ jobs:
       uses: cloudposse-github-actions/screenshot@main
       with:
         url: "file://${{github.workspace}}/banner/index.html"
-        output: "banner/image.png"
+        output: ".github/banner.png"
         customizations: |
           "#name": "${{ steps.metadata.outputs.repository_name }}"
           "#desc": "${{ steps.metadata.outputs.repository_description }}"
