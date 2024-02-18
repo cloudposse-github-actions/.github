@@ -3,22 +3,11 @@
 #
 # Order is important: the last matching pattern has the highest precedence
 
-# These owners will be the default owners for everything
-*             @cloudposse/engineering @cloudposse/contributors
+# To allow mergify to auto-merge, we must in general not assign code owners to files
+# This is because mergify will not be able to merge if the code owner is not a mergify admin.
+# Instead, we require mergify checks to pass before merging and re-implement CODEOWNERS 
+# functionality in the mergify configuration.
 
-# Cloud Posse must review any changes to Makefiles
-**/Makefile   @cloudposse/engineering
-**/Makefile.* @cloudposse/engineering
-
-# Cloud Posse must review any changes to GitHub actions
-.github/*     @cloudposse/engineering
-
-# Cloud Posse must review any changes to standard context definition,
-# but some changes can be rubber-stamped.
-**/*.tf       @cloudposse/engineering @cloudposse/contributors @cloudposse/approvers
-README.yaml   @cloudposse/engineering @cloudposse/contributors @cloudposse/approvers
-README.md     @cloudposse/engineering @cloudposse/contributors @cloudposse/approvers
-docs/*.md     @cloudposse/engineering @cloudposse/contributors @cloudposse/approvers
 
 # Cloud Posse Admins must review all changes to CODEOWNERS or the mergify configuration
 .github/mergify.yml @cloudposse/admins
