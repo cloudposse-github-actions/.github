@@ -1,1 +1,9 @@
+# Module directory
+.terraform
+.idea
+*.iml
+
+.build-harness
+build-harness
+
 **/.DS_Store
