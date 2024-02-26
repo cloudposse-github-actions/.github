@@ -7,7 +7,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - "scaffolding/*"
+      - "scaffolding/**"
 
 permissions:
   pull-requests: write
