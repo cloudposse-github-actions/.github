@@ -1,0 +1,66 @@
+name: Scaffold and Commit Action
+description: |
+  This action determines the type of repository based on its properties,
+  copies the files from the corresponding scaffolding directory,
+  overlays them onto the workspace, and commits the changes to a Pull Request.
+
+inputs:
+  token:
+    description: 'GitHub Token'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+  - name: Checkout Repository
+    uses: actions/checkout@v4
+    with:
+      token: ${{ inputs.token }}
+
+  - name: Get Repository Properties
+    id: repo_properties
+    shell: bash
+    run: |
+      response=$(curl -L \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer ${{ inputs.token }}" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        https://api.github.com/repos/${{ github.repository }}/properties/values)
+      properties=$(echo "$response" | jq -r 'reduce .[] as $item ({}; .[$item.property_name] = $item.value)')
+      echo "properties=$properties" >> $GITHUB_OUTPUT
+
+  - name: Determine Repository Type
+    id: repo_type
+    shell: bash
+    run: |
+      properties="${{ steps.repo_properties.outputs.properties }}"
+      type=$(echo "$properties" | jq -r '.type')
+      echo "type=$type" >> $GITHUB_OUTPUT
+
+  - name: Copy Scaffolding Files
+    id: copy_scaffolding
+    shell: bash
+    run: |
+      type="${{ steps.repo_type.outputs.type }}"
+      scaffolding_path="${{github.action_path}}/scaffolding/$type"
+      if [ -f "${scaffolding_path}/Makefile" ]; then
+        echo "Running scaffolding for '$type'..."
+        cd $scaffolding_path && make all
+      else
+        echo "Scaffolding for type '$type' not supported."
+        exit 1
+      fi
+      
+  - name: Commit and Push Changes
+    uses: peter-evans/create-pull-request@v6
+    with:
+      token: ${{ inputs.token }}
+      commit-message: 'Scaffold and overlay files'
+      branch: 'auto-update/scaffolding'
+      title: 'Update Repository Scaffolding'
+      body: |
+        ## what
+        - This pull request includes the scaffolding files overlaid onto the repository.
+
+        ## why
+        - Update the repository whenever the scaffolding files change from the organization's `.github` repository.
