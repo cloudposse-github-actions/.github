@@ -2,7 +2,7 @@
 shared:
   automated_prs: &automated_prs
     - "author=cloudpossebot"
-    - "author=github-actions"
+    - "author=github-actions[bot]"
   default_branch: &default_branch
     - "base=main"
     - "base=master"
