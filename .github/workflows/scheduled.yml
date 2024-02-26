@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  scaffolding:
     runs-on: ubuntu-latest
     environment: security
     steps:
