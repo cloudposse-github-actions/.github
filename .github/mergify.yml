@@ -41,8 +41,8 @@
   - name: close stale pull request
     conditions:
       - or:
-          - base=main
-          - base=master
+        - base=main
+        - base=master
       - -closed
       - updated-at < 30 days ago
     actions:
