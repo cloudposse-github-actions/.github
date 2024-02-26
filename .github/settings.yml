@@ -56,7 +56,7 @@ labels:
 
   - name: feature
     color: '#336699'
-    description: New functionality.
+    description: New functionality
 
   - name: bugfix
     color: '#fbca04'
@@ -76,11 +76,11 @@ labels:
 
   - name: duplicate
     color: '#cfd3d7'
-    description: 'This issue or pull request already exists'
+    description: This issue or pull request already exists
 
   - name: enhancement
     color: '#a2eeef'
-    description: 'New feature or request'
+    description: New feature or request
 
   - name: good first issue
     color: '#7057ff'
@@ -100,7 +100,7 @@ labels:
 
   - name: minor
     color: '#00cc33'
-    description: 'New features that do not break anything'
+    description: New features that do not break anything
 
   - name: no-release
     color: '#0075ca'
@@ -108,7 +108,7 @@ labels:
 
   - name: patch
     color: '#0E8A16'
-    description: 'A minor, backward compatible change'
+    description: A minor, backward compatible change
 
   - name: question
     color: '#d876e3'
