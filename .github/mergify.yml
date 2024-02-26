@@ -1,0 +1,51 @@
+
+pull_request_rules:
+  - name: "merge automated PRs that only update the markdown files, images or videos"
+    conditions:
+      - "#check-pending=0"
+      - or:
+        - "base=master"
+        - "base=main"
+      - "head~=auto-update/.*"
+      - "author=cloudpossebot"
+      - "files~=\\.(md|gif|png|jpg|mp4)$"
+    actions:
+      label:
+        add:
+          - "no-release"
+      merge:
+        method: "squash"
+
+  - name: "delete the head branch after merge"
+    conditions:
+      - "merged"
+    actions:
+      delete_head_branch: {}
+
+  - name: "ask to resolve conflict"
+    conditions:
+      - "conflict"
+    actions:
+      comment:
+        message: "This pull request now has conflicts. Could you fix it @{{author}}? 🙏"
+
+  - name: "remove outdated reviews"
+    conditions:
+      - "base=master"
+    actions:
+      dismiss_reviews:
+        changes_requested: true
+        approved: true
+        message: "This Pull Request has been updated, so we're dismissing all reviews."
+
+  - name: close stale pull request
+    conditions:
+      - or:
+        - base=main
+        - base=master
+      - -closed
+      - updated-at < 30 days ago
+    actions:
+      close:
+        message: |
+          This pull request looks stale. Feel free to reopen it if you think it's a mistake.
