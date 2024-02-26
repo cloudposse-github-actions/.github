@@ -3,6 +3,10 @@ name: Scheduled Workflow
 on:
   schedule:
     - cron: "0 0 * * *"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "scaffolding/*"
   workflow_dispatch:
 
 permissions:
@@ -10,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  scaffolding:
     runs-on: ubuntu-latest
     environment: security
     steps:
