@@ -62,7 +62,7 @@
   {{- (ds "config").deprecated.notice }}
 {{- else }}
 > [!IMPORTANT]
->  This module is no longer actively maintained
+>  This GitHub Action is no longer actively maintained
 {{- end }}
 {{- if (file.Exists "action.yml") }}
 
@@ -135,12 +135,12 @@ We have <a href="{{ $github_actions }}">*dozens of other GitHub Actions*</a> tha
 {{ if has (ds "config") "usage" }}
 ## Usage
 
-{{ if (file.Exists "main.tf") }}
+{{ if (file.Exists "action.yml") }}
 
 > [!IMPORTANT]
-> In Cloud Posse's examples, we avoid pinning modules to specific versions to prevent discrepancies between the documentation 
-> and the latest released versions. However, for your own projects, we strongly advise pinning each module to the exact version
-> you're using. This practice ensures the stability of your infrastructure. Additionally, we recommend implementing a systematic 
+> In Cloud Posse's examples, we avoid pinning GitHub Actions to specific versions to prevent discrepancies between the documentation 
+> and the latest released versions. However, for your own projects, we strongly advise pinning each GitHub Action to the exact version
+> you're using. This practice ensures the stability of your workflows. Additionally, we recommend implementing a systematic 
 > approach for updating versions to avoid unexpected changes.
 
 {{end}}
