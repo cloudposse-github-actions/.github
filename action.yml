@@ -33,7 +33,7 @@ runs:
     id: repo_type
     shell: bash
     run: |
-      properties="${{ steps.repo_properties.outputs.properties }}"
+      properties="${{ fromJSON(steps.repo_properties.outputs.properties) }}"
       type=$(echo "$properties" | jq -r '.type')
       echo "type=$type" >> $GITHUB_OUTPUT
 
