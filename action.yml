@@ -54,6 +54,7 @@ runs:
       token: ${{ inputs.token }}
       commit-message: 'Scaffold and overlay files'
       branch: 'auto-update/scaffolding'
+      base: ${{ github.ref_name }}
       title: 'Update Repository Scaffolding'
       body: |
         ## what
