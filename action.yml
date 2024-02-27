@@ -17,8 +17,8 @@ runs:
     with:
       token: ${{ inputs.token }}
 
-  - name: Get Repository Properties
-    id: repo_properties
+  - name: Get Repository Metadata
+    id: repo
     shell: bash
     env:
       GH_TOKEN: ${{ inputs.token }}
@@ -26,22 +26,17 @@ runs:
       response=$(gh api /repos/${{ github.repository }}/properties/values)
       properties=$(echo "$response" | jq -cr 'reduce .[] as $item ({}; .[$item.property_name] = $item.value)')
       echo "properties=$properties" >> $GITHUB_OUTPUT
+      echo "type=$(echo "$response" | jq -r .type)" >> $GITHUB_OUTPUT
+      echo "branch=${{ github.event.pull_request.head.ref ||  github.ref_name }}" >> $GITHUB_OUTPUT
       echo "**Ref Name:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
       echo "**Default Branch:** ${{github.event.repository.default_branch }}" >> $GITHUB_STEP_SUMMARY
       echo "**Head Ref:** ${{ github.event.pull_request.head.ref }}" >> $GITHUB_STEP_SUMMARY
-
-  - name: Determine Repository Type
-    id: repo_type
-    shell: bash
-    run: |
-      type="${{ fromJSON(steps.repo_properties.outputs.properties).type }}"
-      echo "type=$type" >> $GITHUB_OUTPUT
 
   - name: Run Scaffolding
     id: scaffolding
     shell: bash
     run: |
-      type="${{ steps.repo_type.outputs.type }}"
+      type="${{ steps.repo.outputs.type }}"
       scaffolding_path="${{github.action_path}}/scaffolding/$type"
       if [ -f "${scaffolding_path}/Makefile" ]; then
         echo "Running scaffolding for '$type'..."
@@ -59,13 +54,13 @@ runs:
       
   - name: Commit and Push Changes to a New Pull Request
     uses: peter-evans/create-pull-request@v6
-    if: ${{ github.ref_name == github.event.repository.default_branch }}
+    if: ${{ steps.repo.outputs.branch == github.event.repository.default_branch }}
     id: auto-pr
     with:
       token: ${{ inputs.token }}
       commit-message: 'chore: update repo scaffolding'
       branch: 'auto-update/scaffolding'
-      base: ${{ github.event.repository.default_branch }}
+      base: ${{ steps.repo.outputs.branch }}
       title: 'Update Repository Scaffolding'
       body: |
         ## what
@@ -75,7 +70,7 @@ runs:
         - Update the repository whenever the scaffolding files change from the organization's `.github` repository.
 
   - uses: stefanzweifel/git-auto-commit-action@v5
-    if: ${{ github.ref_name != github.event.repository.default_branch }}
+    if: ${{ steps.repo.outputs.branch != github.event.repository.default_branch }}
     name: Commit changes to current Pull Request
     id: auto-commit
     env:
