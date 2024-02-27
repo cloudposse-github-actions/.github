@@ -28,6 +28,7 @@ runs:
       echo "properties=$properties" >> $GITHUB_OUTPUT
       echo "**Ref Name:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
       echo "**Default Branch:** ${{github.event.repository.default_branch }}" >> $GITHUB_STEP_SUMMARY
+      echo "**Head Ref:** ${{ github.event.pull_request.head.ref }}" >> $GITHUB_STEP_SUMMARY
 
   - name: Determine Repository Type
     id: repo_type
@@ -83,4 +84,4 @@ runs:
       commit_message: "chore: update repo scaffolding"
       commit_user_name: org-action 🏗️
       commit_user_email: actions@github.com
-      commit_author: org-action 🏗️  <actions@github.com>
+      commit_author: org-action 🏗️ <actions@github.com>
