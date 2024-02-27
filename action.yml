@@ -34,8 +34,8 @@ runs:
       type="${{ fromJSON(steps.repo_properties.outputs.properties).type }}"
       echo "type=$type" >> $GITHUB_OUTPUT
 
-  - name: Copy Scaffolding Files
-    id: copy_scaffolding
+  - name: Run Scaffolding
+    id: scaffolding
     shell: bash
     run: |
       type="${{ steps.repo_type.outputs.type }}"
@@ -54,7 +54,7 @@ runs:
       token: ${{ inputs.token }}
       commit-message: 'Scaffold and overlay files'
       branch: 'auto-update/scaffolding'
-      base: ${{ github.ref_name }}
+      base: ${{ github.event.repository.default_branch }}
       title: 'Update Repository Scaffolding'
       body: |
         ## what
