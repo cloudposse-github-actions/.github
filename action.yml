@@ -54,11 +54,13 @@ runs:
         exit 1
       fi
       
-  - name: Commit and Push Changes
+  - name: Commit and Push Changes to a New Pull Request
     uses: peter-evans/create-pull-request@v6
+    if: github.ref_name == github.event.repository.default_branch
+    id: auto-pr
     with:
       token: ${{ inputs.token }}
-      commit-message: 'Scaffold and overlay files'
+      commit-message: 'chore: update repo scaffolding'
       branch: 'auto-update/scaffolding'
       base: ${{ github.event.repository.default_branch }}
       title: 'Update Repository Scaffolding'
@@ -68,3 +70,15 @@ runs:
 
         ## why
         - Update the repository whenever the scaffolding files change from the organization's `.github` repository.
+
+  - uses: stefanzweifel/git-auto-commit-action@v4
+    if: github.ref_name != github.event.repository.default_branch
+    name: Commit changes to current Pull Request
+    id: auto-commit
+    env:
+      GITHUB_TOKEN: ${{ inputs.token }}
+    with:
+      commit_message: "chore: update repo scaffolding"
+      commit_user_name: org-action 🏗️
+      commit_user_email: actions@github.com
+      commit_author: org-action 🏗️  <actions@github.com>
