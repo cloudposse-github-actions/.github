@@ -42,9 +42,15 @@ runs:
       scaffolding_path="${{github.action_path}}/scaffolding/$type"
       if [ -f "${scaffolding_path}/Makefile" ]; then
         echo "Running scaffolding for '$type'..."
-        cd $scaffolding_path && make all
+        echo "## Scaffolding ($type)"" >> $GITHUB_STEP_OUTPUT
+        echo '```shell' >> $GITHUB_STEP_OUTPUT
+        cd $scaffolding_path && make all >> $GITHUB_STEP_OUTPUT 2>&1
+        echo '```' >> $GITHUB_STEP_OUTPUT
       else
         echo "Scaffolding for type '$type' not supported."
+        echo '> [!WARNING]' >> $GITHUB_STEP_OUTPUT
+        echo '> ## Unsupported Repository Type' >> $GITHUB_STEP_OUTPUT
+        echo "> Scaffold for type `'$type'` not found." >> $GITHUB_STEP_OUTPUT
         exit 1
       fi
       
