@@ -42,9 +42,9 @@ runs:
       scaffolding_path="${{github.action_path}}/scaffolding/$type"
       if [ -f "${scaffolding_path}/Makefile" ]; then
         echo "Running scaffolding for '$type'..."
-        echo "## Scaffolding ($type)"" >> $GITHUB_STEP_OUTPUT
+        echo "## Scaffolding ($type)" >> $GITHUB_STEP_OUTPUT
         echo '```shell' >> $GITHUB_STEP_OUTPUT
-        cd $scaffolding_path && make all >> $GITHUB_STEP_OUTPUT 2>&1
+        cd $scaffolding_path && (make all >> $GITHUB_STEP_OUTPUT 2>&1)
         echo '```' >> $GITHUB_STEP_OUTPUT
       else
         echo "Scaffolding for type '$type' not supported."
