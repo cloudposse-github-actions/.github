@@ -57,11 +57,7 @@ environments:
     deployment_branch_policy:
       custom_branches:
         - main
-        - auto-update/**
-        - security/**
-        - dependabot/**
-        - renovate/**
-
+        - release/**
 
 # Labels: define labels for Issues and Pull Requests
 labels:
