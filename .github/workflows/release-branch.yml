@@ -24,7 +24,14 @@ concurrency:
 jobs:
   ci-readme:
     runs-on: ubuntu-latest
+    environment: release
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: github-app
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -55,12 +62,21 @@ jobs:
         id: auto_commit
         if: |
           steps.readme_diff.outcome == 'failure' && 
-          startsWith(github.ref, 'renovate/')
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -a -m "Auto-update README.md"
-          git push
+          (
+            startsWith(github.ref, 'security/') ||
+            startsWith(github.ref, 'auto-update/') ||
+            startsWith(github.ref, 'dependabot/') ||
+            startsWith(github.ref, 'renovate/')
+          )
+        # Update existing PR for jobs running in a PR (e.g. non-default branch)
+        # Protected branches will need a GitHub App to update the PR
+        uses: stefanzweifel/git-auto-commit-action@v5
+        env:
+          GITHUB_TOKEN: ${{ steps.github-app.outputs.token }}
+        with:
+          commit_message: "chore: update README.md"
+          commit_user_name: github-actions[bot]
+          commit_user_email: 'github-actions[bot]@users.noreply.github.com'
 
       - name: Status check
         shell: bash
