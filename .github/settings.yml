@@ -48,6 +48,17 @@ repository:
   # Either `true` to make this repo available as a template repository or `false` to prevent it.
   is_template: false
 
+environments:
+  - name: release
+    deployment_branch_policy:
+      custom_branches:
+        - main
+  - name: security
+    deployment_branch_policy:
+      custom_branches:
+        - main
+        - release/**
+
 # Labels: define labels for Issues and Pull Requests
 labels:
   - name: bug
@@ -73,6 +84,10 @@ labels:
   - name: documentation
     color: '#0075ca'
     description: Improvements or additions to documentation
+
+  - name: readme
+    color: '#0075ca'
+    description: Improvements or additions to the README
 
   - name: duplicate
     color: '#cfd3d7'

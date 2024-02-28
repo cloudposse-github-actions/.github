@@ -3,6 +3,9 @@ shared:
   automated_prs: &automated_prs
     - "author=cloudpossebot"
     - "author=github-actions[bot]"
+    - "author=dependabot[bot]"
+    - "author=renovate[bot]"
+
   default_branch: &default_branch
     - "base=main"
     - "base=master"
@@ -24,6 +27,14 @@ pull_request_rules:
       label:
         add:
           - "readme"
+
+  - name: "run terratest on automated pull requests that update terraform files"
+    conditions:
+      - or: *automated_prs
+      - "files~=\\.tf$"
+    actions:
+      comment:
+        message: "/terratest"
 
   - name: "merge automated PRs that only update the markdown files, images or videos"
     conditions:

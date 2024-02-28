@@ -1,0 +1,26 @@
+name: Scheduled Workflow
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "scaffolding/**"
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  scaffolding:
+    runs-on: ubuntu-latest
+    environment: security
+    steps:
+      - name: Run organizational action
+        uses: cloudposse-github-actions/.github@v0
+        with:
+          github_app_id: ${{ vars.GH_APP_ID }}
+          github_app_private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
