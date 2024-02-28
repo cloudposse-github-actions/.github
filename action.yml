@@ -4,33 +4,49 @@ description: |
   copies the files from the corresponding scaffolding directory,
   overlays them onto the workspace, and commits the changes to a Pull Request.
 
+  A GitHub App is required because scaffolding may need to commit to protected branches and
+  any updates of `.github/workflows` needs the `workflows:write` permission, only available via
+  a GitHub App. Additionally, if any of the commits should trigger GitHub Actions, the default
+  `GITHUB_TOKEN` will not work.
+
 inputs:
-  token:
-    description: 'GitHub Token'
+  github_app_id:
+    description: 'GitHub App ID'
+    required: true
+  github_app_private_key:
+    description: 'GitHub App Private Key'
     required: true
 
 runs:
   using: 'composite'
   steps:
+  - uses: actions/create-github-app-token@v1
+    id: github-app
+    with:
+      app-id: ${{ input.github_app_id }}
+      private-key: ${{ input.github_app_private_key }}
+
   - name: Checkout Repository
     uses: actions/checkout@v4
     with:
-      token: ${{ inputs.token }}
+      token: ${{ steps.github-app.outputs.token }}
 
   - name: Get Repository Metadata
     id: repo
     shell: bash
     env:
-      GH_TOKEN: ${{ inputs.token }}
+      GH_TOKEN: ${{ steps.github-app.outputs.token }}
     run: |
       response=$(gh api /repos/${{ github.repository }}/properties/values)
       properties=$(echo "$response" | jq -cr 'reduce .[] as $item ({}; .[$item.property_name] = $item.value)')
+      type=$(echo "$properties" | jq -r .type)
       echo "properties=$properties" >> $GITHUB_OUTPUT
-      echo "type=$(echo "$properties" | jq -r .type)" >> $GITHUB_OUTPUT
+      echo "type=$type" >> $GITHUB_OUTPUT
       echo "branch=${{ github.event.pull_request.head.ref ||  github.ref_name }}" >> $GITHUB_OUTPUT
       echo "**Ref Name:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
       echo "**Default Branch:** ${{github.event.repository.default_branch }}" >> $GITHUB_STEP_SUMMARY
       echo "**Head Ref:** ${{ github.event.pull_request.head.ref }}" >> $GITHUB_STEP_SUMMARY
+      echo "**Repo Type**: $type" >> $GITHUB_STEP_SUMMARY
 
   - name: Run Scaffolding
     id: scaffolding
@@ -40,7 +56,7 @@ runs:
       scaffolding_path="${{github.action_path}}/scaffolding/$type"
       if [ -f "${scaffolding_path}/Makefile" ]; then
         echo "Running scaffolding for '$type'..."
-        echo "## Scaffolding ($type)" >> $GITHUB_STEP_SUMMARY
+        echo "## Scaffolding" >> $GITHUB_STEP_SUMMARY
         echo '```shell' >> $GITHUB_STEP_SUMMARY
         cd $scaffolding_path && (make all >> $GITHUB_STEP_SUMMARY 2>&1)
         echo '```' >> $GITHUB_STEP_SUMMARY
@@ -52,12 +68,13 @@ runs:
         exit 1
       fi
       
+  # Open New PR for scheduled jobs running in the default branch
   - name: Commit and Push Changes to a New Pull Request
     uses: peter-evans/create-pull-request@v6
     if: ${{ steps.repo.outputs.branch == github.event.repository.default_branch }}
     id: auto-pr
     with:
-      token: ${{ inputs.token }}
+      token: ${{ steps.github-app.outputs.token }}
       commit-message: 'chore: update repo scaffolding'
       branch: 'auto-update/scaffolding'
       base: ${{ steps.repo.outputs.branch }}
@@ -69,12 +86,14 @@ runs:
         ## why
         - Update the repository whenever the scaffolding files change from the organization's `.github` repository.
 
+  # Update existing PR for jobs running in a PR (e.g. non-default branch)
+  # Protected branches will need a GitHub App to update the PR
   - uses: stefanzweifel/git-auto-commit-action@v5
     if: ${{ steps.repo.outputs.branch != github.event.repository.default_branch }}
     name: Commit changes to current Pull Request
     id: auto-commit
     env:
-      GITHUB_TOKEN: ${{ inputs.token }}
+      GITHUB_TOKEN: ${{ steps.github-app.outputs.token }}
     with:
       commit_message: "chore: update repo scaffolding"
       commit_user_name: org-action 🏗️

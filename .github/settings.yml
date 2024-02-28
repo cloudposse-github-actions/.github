@@ -85,6 +85,10 @@ labels:
     color: '#0075ca'
     description: Improvements or additions to documentation
 
+  - name: readme
+    color: '#0075ca'
+    description: Improvements or additions to the README
+
   - name: duplicate
     color: '#cfd3d7'
     description: This issue or pull request already exists

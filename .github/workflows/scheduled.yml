@@ -19,6 +19,8 @@ jobs:
     environment: security
     steps:
       - name: Run organizational action
-        uses: cloudposse-github-actions/.github@repo-scaffolding
+        uses: cloudposse-github-actions/.github@v0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github_app_id: ${{ vars.GH_APP_ID }}
+          github_app_private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
