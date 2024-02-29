@@ -33,7 +33,7 @@ jobs:
           app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
-      - uses: cloudposse-github-action/readme@main
+      - uses: cloudposse-github-actions/readme@main
         with:
           token: ${{ steps.github-app.outputs.token }}
           readme_enabled: true
