@@ -5,8 +5,10 @@ on:
     branches:
       - main
       - release/**
+    # This .github organization is a special case for the release branch
+    # We want to cut releases when github reusable/shared workflows change.
+    # So we should not skip .github/** paths
     paths-ignore:
-      - '.github/**'
       - 'docs/**'
       - 'examples/**'
       - 'test/**'
