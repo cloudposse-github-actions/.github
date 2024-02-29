@@ -32,7 +32,10 @@ jobs:
         with:
           app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: cloudposse-github-actions/readme@main
         with:
           token: ${{ steps.github-app.outputs.token }}
