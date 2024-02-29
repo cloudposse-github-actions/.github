@@ -79,6 +79,10 @@ runs:
       branch: 'auto-update/scaffolding'
       base: ${{ steps.repo.outputs.branch }}
       title: 'Update Repository Scaffolding'
+      labels: |
+        auto-update
+        scaffolding
+        no-release
       body: |
         ## what
         - This pull request includes the scaffolding files overlaid onto the repository.
