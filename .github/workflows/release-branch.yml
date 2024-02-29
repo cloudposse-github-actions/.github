@@ -33,66 +33,12 @@ jobs:
           app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Generate readme
-        shell: bash
-        run: |
-          if [ ! -f README.yaml ]; then
-            echo "Project does not have a README.yaml. Skipping..."
-            exit 0
-          fi
-
-          # A Makefile is required for build-harness and rebuilding the README.md from the README.yaml and rebuilding the README.md from the README.yaml and rebuilding the README.md from the README.yaml and rebuilding the README.md from the README.yaml
-          if [ ! -f Makefile ]; then
-            echo "Project does not have a Makefile";
-            exit 1
-          fi
-
-          make init
-          make readme/build
-
-      - name: Check readme
-        id: readme_diff
-        shell: bash
-        run: git diff --exit-code
-        continue-on-error: true
-
-      - name: Auto-update README.md for bot pull requests
-        id: auto_commit
-        if: |
-          steps.readme_diff.outcome == 'failure' && 
-          (
-            startsWith(github.ref, 'security/') ||
-            startsWith(github.ref, 'auto-update/') ||
-            startsWith(github.ref, 'dependabot/') ||
-            startsWith(github.ref, 'renovate/')
-          )
-        # Update existing PR for jobs running in a PR (e.g. non-default branch)
-        # Protected branches will need a GitHub App to update the PR
-        uses: stefanzweifel/git-auto-commit-action@v5
-        env:
-          GITHUB_TOKEN: ${{ steps.github-app.outputs.token }}
+      - uses: cloudposse-github-action/readme@main
         with:
-          commit_message: "chore: update README.md"
-          commit_user_name: github-actions[bot]
-          commit_user_email: 'github-actions[bot]@users.noreply.github.com'
-
-      - name: Status check
-        shell: bash
-        run: |
-          git diff --exit-code && success="true" || success="false"
-          if [ "$success" = "false" ]; then
-            echo "> [!CAUTION]" >> $GITHUB_STEP_SUMMARY
-            echo "> ## README.md is outdated." >> $GITHUB_STEP_SUMMARY
-            echo "> Please run the following commands locally and push the file:" >> $GITHUB_STEP_SUMMARY
-            echo '> ```shell' >> $GITHUB_STEP_SUMMARY
-            echo '> make init' >> $GITHUB_STEP_SUMMARY
-            echo '> make readme' >> $GITHUB_STEP_SUMMARY
-            echo '> ```' >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
+          token: ${{ steps.github-app.outputs.token }}
+          readme_enabled: true
+          banner_enabled: true
+          commit_method: 'commit'
 
   release-controller:
     runs-on: ubuntu-latest
