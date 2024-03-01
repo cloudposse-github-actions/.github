@@ -160,6 +160,9 @@ pull_request_rules:
     conditions:
       - "#files=0"
     actions:
+      label:
+        add:
+          - "no-changes"
       close:
         message: "This pull request has been automatically closed because there are no longer any changes."
 
