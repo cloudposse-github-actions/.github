@@ -156,6 +156,13 @@ pull_request_rules:
         message: |
           This pull request looks stale. Feel free to reopen it if you think it's a mistake.
 
+  - name: "close Pull Requests without files changed"
+    conditions:
+      - "#files=0"
+    actions:
+      close:
+        message: "This pull request has been automatically closed because there are no longer any changes."
+
   - name: welcome new contributors
     conditions:
       - and:
@@ -209,6 +216,7 @@ pull_request_rules:
           - '#approved-reviews-by>=1'
           - '#changes-requested-reviews-by>=1'
           - "#review-threads-unresolved=0"
+          - "#commented-reviews-by=0"
           # Checks are passing
           - "#check-pending=0"
           - "#status-failure=0"
