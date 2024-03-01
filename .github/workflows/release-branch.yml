@@ -35,13 +35,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          # otherwise, there would be errors pushing refs to the destination repository.
           fetch-depth: 0
+          # otherwise, the token used is the GITHUB_TOKEN, instead of the GitHub App token.
+          persist-credentials: false
+          token: ${{ steps.github-app.outputs.token }}
       - uses: cloudposse-github-actions/readme@main
         with:
           token: ${{ steps.github-app.outputs.token }}
           readme_enabled: true
           banner_enabled: true
+          validate_readme: true
           commit_method: 'commit'
+          commit_push_options: '--force-with-lease'
 
   release-controller:
     runs-on: ubuntu-latest

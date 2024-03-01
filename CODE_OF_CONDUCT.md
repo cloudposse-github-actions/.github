@@ -119,7 +119,7 @@ Our community is public and free-for-everyone to join. In fact, we encourage you
 
 If you would like to invite someone to the team, they may join here:
 
-[https://slack.sweetops.com](/https://slack.sweetops.com/)
+[https://slack.sweetops.com](https://slack.sweetops.com/)
 
 ## Open Source Collaboration
 
