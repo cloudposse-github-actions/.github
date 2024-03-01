@@ -15,14 +15,14 @@ jobs:
     environment: release
     concurrency: release
     steps:
-      - uses: cloudposse/github-action-major-release-tagger@v1
-        env:
-          GITHUB_ENV: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/create-github-app-token@v1
         id: github-app
         with:
           app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - uses: cloudposse/github-action-major-release-tagger@v1
+        env:
+          GITHUB_ENV: ${{ steps.github-app.outputs.token }}
       - uses: cloudposse/github-action-release-branch-manager@v1
         with:
           token: ${{ steps.github-app.outputs.token }}
