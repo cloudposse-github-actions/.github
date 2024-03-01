@@ -49,7 +49,7 @@ shared:
     - "#status-failure=0"
 
   # Only for terraform files
-  require_terraform_checks_passing: &terraform_checks_passing
+  require_terraform_checks_passing: &require_terraform_checks_passing
     - or:
       - "-files~=\\.tf$"
       - and:
@@ -57,7 +57,7 @@ shared:
         - "check-success=test/terratest"
         - -status-failure~=^(terratest|terraform)$
 
-  require_codeowners_checks_passing: &codeowners_checks_passing
+  require_codeowners_checks_passing: &require_codeowners_checks_passing
     - or:
       - "-files=CODEOWNERS"
       - and:
@@ -83,6 +83,7 @@ pull_request_rules:
   - name: "label automated pull requests"
     conditions:
       - or: *automated_prs
+      - *is_open
     actions:
       label:
         add:
@@ -90,6 +91,7 @@ pull_request_rules:
 
   - name: "label automated pull requests that update readme"
     conditions:
+      - *is_open
       - or: *automated_prs
       - "files=README.md"
     actions:
@@ -99,6 +101,7 @@ pull_request_rules:
 
   - name: "run terratest on automated pull requests that update terraform files"
     conditions:
+      - *is_open
       - or: *automated_prs
       - "files~=\\.tf$"
     actions:
@@ -107,6 +110,7 @@ pull_request_rules:
 
   - name: "merge automated PRs that only update the markdown files, images or videos"
     conditions:
+      - *is_open
       - "#check-pending=0"
       - "head~=auto-update/.*"
       - or: *default_branch
@@ -127,6 +131,7 @@ pull_request_rules:
 
   - name: "ask to resolve conflict"
     conditions:
+      - *is_open
       - "conflict"
     actions:
       comment:
@@ -137,6 +142,7 @@ pull_request_rules:
 
   - name: "ask to not edit the readme"
     conditions:
+      - *is_open
       - files=README.md
       - -files=README.yaml
     actions:
@@ -157,6 +163,7 @@ pull_request_rules:
 
   - name: "ask to rebuild readme"
     conditions:
+      - *is_open
       - files=README.yaml
       - -files=README.md
     actions:
@@ -177,6 +184,7 @@ pull_request_rules:
 
   - name: "ask for title"
     conditions:
+      - *is_open
       - -title~=^[0-9A-Za-z]+
     actions:
       comment:
@@ -188,6 +196,7 @@ pull_request_rules:
 
   - name: "ask for description"
     conditions:
+      - *is_open
       - -body~=[0-9A-Za-z]{10,}
       - -body~=(Describe high-level what changed)
     actions:
@@ -200,6 +209,7 @@ pull_request_rules:
 
   - name: "remove outdated reviews"
     conditions:
+      - *is_open
       - or: *default_branch
     actions:
       dismiss_reviews:
@@ -209,6 +219,7 @@ pull_request_rules:
 
   - name: "remove triage label if approved"
     conditions:
+      - *is_open
       - '#approved-reviews-by>=1'
     actions:
       label:
@@ -217,6 +228,7 @@ pull_request_rules:
 
   - name: close stale pull request
     conditions:
+      - *is_open
       - or: *default_branch
       - -closed
       - updated-at < 30 days ago
@@ -235,6 +247,7 @@ pull_request_rules:
 
   - name: "close Pull Requests without files changed"
     conditions:
+      - *is_open
       - "#files=0"
     actions:
       label:
@@ -245,6 +258,7 @@ pull_request_rules:
 
   - name: welcome new contributors
     conditions:
+      - *is_open
       - and: *not_a_bot
     actions:
       comment:
@@ -259,6 +273,7 @@ pull_request_rules:
 
   - name: add triage label for new pull requests
     conditions:
+      - *is_open
       - '#label=0'
       - or:
         - created-at > 5 minutes ago
@@ -270,6 +285,7 @@ pull_request_rules:
 
   - name: add "WIP" label when the title contains "WIP"
     conditions:
+      - *is_open
       - title~=WIP
     actions:
       label:
@@ -278,6 +294,7 @@ pull_request_rules:
 
   - name: mergeable
     conditions:
+      - *is_open
       - or: *default_branch
     actions:
       post_check:
@@ -290,7 +307,6 @@ pull_request_rules:
             - *checks_passing
             - *require_terraform_checks_passing
             - *require_codeowners_checks_passing
-            - *is_open
 
         title: |
           {% if check_status == "success" %}
