@@ -66,6 +66,7 @@ jobs:
         uses: cloudposse/github-action-auto-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          config-name: auto-release.yml
 
   major-release-tagger:
     runs-on: ubuntu-latest
