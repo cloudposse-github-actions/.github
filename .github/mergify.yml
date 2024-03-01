@@ -1,14 +1,63 @@
 
 shared:
+  # Automated pull requests from bot users
   automated_prs: &automated_prs
     - "author=cloudpossebot"
     - "author=github-actions[bot]"
     - "author=dependabot[bot]"
     - "author=renovate[bot]"
 
+  # Not a bot user
+  not_a_bot: &not_a_bot
+    - "-author=cloudpossebot"
+    - "-author=github-actions[bot]"
+    - "-author=dependabot[bot]"
+    - "-author=renovate[bot]"
+
+  # Default branches
   default_branch: &default_branch
     - "base=main"
     - "base=master"
+
+  # Not a work in progress
+  not_wip: &not_wip
+    - "-title~=^(wip|WIP)"
+    - "-label~=(WIP|wip|do-not-merge|do not merge|triage|duplicate|invalid|stale|wontfix|triage|feedback)"
+    - '-draft'
+
+  # Properly titled and described
+  pr_metadata: &pr_metadata
+    - "title~=(^[0-9A-Za-z]+)"
+    - body~=[0-9A-Za-z]{10,}
+    - -body~=(Describe high-level what changed)
+
+  # Has reviews and no changes requested
+  is_approved: &is_approved
+    - '#approved-reviews-by>=1'
+    - '#changes-requested-reviews-by>=1'
+    - "#review-threads-unresolved=0"
+    - "#commented-reviews-by=0"
+
+  # Checks are passing
+  checks_passing: &checks_passing
+    - "#check-pending=0"
+    - "#status-failure=0"
+    - -status-failure~=^(terratest|terraform)
+
+  # It's not closed or merged
+  is_open: &is_open
+    - -merged
+    - -closed
+
+  # README.md is updated together with README.yaml
+  readme_updated: &readme_updated
+    - or:
+      - and:
+        - -files=README.md
+        - -files=README.yaml
+      - and:
+        - files=README.md
+        - -files=README.yaml
 
 pull_request_rules:
   - name: "label automated pull requests"
@@ -168,9 +217,7 @@ pull_request_rules:
 
   - name: welcome new contributors
     conditions:
-      - and:
-          - author!=dependabot[bot]
-          - author!=mergify[bot]
+      - and: *not_a_bot
     actions:
       comment:
         message: |
@@ -207,26 +254,13 @@ pull_request_rules:
     actions:
       post_check:
         success_conditions:
-          # Not a work in progress
-          - "-title~=^(wip|WIP)"
-          - "-label~=(WIP|wip|do-not-merge|do not merge|triage|duplicate|invalid|stale|wontfix|triage|feedback)"
-          - '-draft'
-          # Properly titled and described
-          - "title~=(^[0-9A-Za-z]+)"
-          - body~=[0-9A-Za-z]{10,}
-          - -body~=(Describe high-level what changed)
-          # Has reviews and no changes requested
-          - '#approved-reviews-by>=1'
-          - '#changes-requested-reviews-by>=1'
-          - "#review-threads-unresolved=0"
-          - "#commented-reviews-by=0"
-          # Checks are passing
-          - "#check-pending=0"
-          - "#status-failure=0"
-          - -status-failure~=^(terratest|terraform)
-          # It's not closed or merged
-          - -merged
-          - -closed
+          - and:
+            - *not_wip
+            - *pr_metadata
+            - *readme_updated
+            - *is_approved
+            - *checks_passing
+            - *is_open
 
         title: |
           {% if check_status == "success" %}
