@@ -19,6 +19,10 @@ shared:
     - "base=main"
     - "base=master"
 
+  # Release branches
+  release_branch: &release_branch
+    - "base~=^release/v\\d{1,2}$"
+
   # Not a work in progress
   not_wip: &not_wip
     - "-title~=^(wip|WIP)"
@@ -42,7 +46,14 @@ shared:
   checks_passing: &checks_passing
     - "#check-pending=0"
     - "#status-failure=0"
+
+  require_terraform_checks_passing: &terraform_checks_passing
+    - "check-success=test/bats"
+    - "check-success=test/terratest"
     - -status-failure~=^(terratest|terraform)
+
+  require_codeowners_checks_passing: &codeowners_checks_passing
+    - "check-success=validate-codeowners"
 
   # It's not closed or merged
   is_open: &is_open
