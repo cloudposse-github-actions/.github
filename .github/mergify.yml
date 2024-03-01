@@ -181,10 +181,10 @@ pull_request_rules:
     actions:
       comment:
         message: |
-            > [!IMPORTANT]
-            > ## Title is necessary and should not be empty.
-            >
-            > Kindly provide a meaningful title for this Pull Request.
+          > [!IMPORTANT]
+          > ## Title is necessary and should not be empty.
+          >
+          > Kindly provide a meaningful title for this Pull Request.
 
   - name: "ask for description"
     conditions:
@@ -193,10 +193,10 @@ pull_request_rules:
     actions:
       comment:
         message: |
-            > [!IMPORTANT]
-            > ## Description is necessary and should not be empty.
-            >
-            > Kindly provide details with **what** was changed, **why** it was changed.
+          > [!IMPORTANT]
+          > ## Description is necessary and should not be empty.
+          >
+          > Kindly provide details with **what** was changed, **why** it was changed.
 
   - name: "remove outdated reviews"
     conditions:
@@ -225,6 +225,14 @@ pull_request_rules:
         message: |
           This pull request looks stale. Feel free to reopen it if you think it's a mistake.
 
+  - name: remove certain labels on close
+    conditions:
+      - closed
+    actions:
+      label:
+        remove:
+          - triage
+
   - name: "close Pull Requests without files changed"
     conditions:
       - "#files=0"
@@ -246,8 +254,8 @@ pull_request_rules:
           Please don't be discouraged if it takes a while.
 
           > [!TIP]
-          > ## Need help or want to ask for a PR review?
-          > Join us on [Slack](https://slack.cloudposse.com)
+          > ## Need help or want to ask for a PR review to be expedited?
+          > Join us on [Slack](https://slack.cloudposse.com) in the `#pr-reviews` channel.
 
   - name: add triage label for new pull requests
     conditions:
@@ -280,6 +288,8 @@ pull_request_rules:
             - *readme_updated
             - *is_approved
             - *checks_passing
+            - *require_terraform_checks_passing
+            - *require_codeowners_checks_passing
             - *is_open
 
         title: |
