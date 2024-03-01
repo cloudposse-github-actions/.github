@@ -49,6 +49,7 @@ This repository fulfills several unique functions functions for the Cloud Posse 
 >
 > It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 >
+> We have [*dozens of GitHub Actions*](https://github.com/cloudposse-github-actions?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=github_actions) that are Open Source and well-maintained. Check them out!
 > </details>
 
 <a href="https://cloudposse.com/readme/header/link?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=readme_header_link"><img src="https://cloudposse.com/readme/header/img"/></a>
@@ -146,7 +147,7 @@ Ensure that your team succeeds by using our proven process and turnkey blueprint
 <br/>
 <br/>
 
-
+Complete license is available in the [`LICENSE`](LICENSE) file.
 
 ```text
 Licensed to the Apache Software Foundation (ASF) under one
