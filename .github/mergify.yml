@@ -62,6 +62,72 @@ pull_request_rules:
     actions:
       comment:
         message: "This pull request now has conflicts. Could you fix it @{{author}}? 🙏"
+      label:
+        toggle:
+          - conflict
+
+  - name: "ask to not edit the readme"
+    conditions:
+      - files=README.md
+      - -files=README.yaml
+    actions:
+      comment:
+        message: |
+          > [!IMPORTANT]
+          > Do not edit the `README.md` directly. It's auto-generated from the `README.yaml`
+          >
+
+          Rebuild the `README.md` by running `make readme` and commit the changes.
+
+          ```shell
+          make init
+          make readme
+          ```
+
+          Could you fix it @{{author}}? 🙏
+
+  - name: "ask to rebuild readme"
+    conditions:
+      - files=README.yaml
+      - -files=README.md
+    actions:
+      comment:
+        message: |
+          > [!IMPORTANT]
+          > `README.md` is out of date.
+          >
+
+          Rebuild the `README.md` by running `make readme` and commit the changes.
+
+          ```shell
+          make init
+          make readme
+          ```
+
+          Could you fix it @{{author}}? 🙏
+
+  - name: "ask for title"
+    conditions:
+      - -title~=^[0-9A-Za-z]+
+    actions:
+      comment:
+        message: |
+            > [!IMPORTANT]
+            > ## Title is necessary and should not be empty.
+            >
+            > Kindly provide a meaningful title for this Pull Request.
+
+  - name: "ask for description"
+    conditions:
+      - -body~=[0-9A-Za-z]{10,}
+      - -body~=(Describe high-level what changed)
+    actions:
+      comment:
+        message: |
+            > [!IMPORTANT]
+            > ## Description is necessary and should not be empty.
+            >
+            > Kindly provide details with **what** was changed, **why** it was changed.
 
   - name: "remove outdated reviews"
     conditions:
@@ -72,6 +138,14 @@ pull_request_rules:
         approved: true
         message: "This Pull Request has been updated, so we're dismissing all reviews."
 
+  - name: "remove triage label if approved"
+    conditions:
+      - '#approved-reviews-by>=1'
+    actions:
+      label:
+        remove:
+          - triage
+
   - name: close stale pull request
     conditions:
       - or: *default_branch
@@ -81,3 +155,75 @@ pull_request_rules:
       close:
         message: |
           This pull request looks stale. Feel free to reopen it if you think it's a mistake.
+
+  - name: welcome new contributors
+    conditions:
+      - and:
+          - author!=dependabot[bot]
+          - author!=mergify[bot]
+    actions:
+      comment:
+        message: |
+          Thanks @{{author}} for creating this pull request! 
+          A maintainer will review your changes shortly.
+          Please don't be discouraged if it takes a while.
+
+          > [!TIP]
+          > ## Need help or want to ask for a PR review?
+          > Join us on [Slack](https://slack.cloudposse.com)
+
+  - name: add triage label for new pull requests
+    conditions:
+      - '#label=0'
+      - or:
+        - created-at > 5 minutes ago
+        - updated-at > 7 days ago
+    actions:
+      label:
+        add:
+          - triage
+
+  - name: add "WIP" label when the title contains "WIP"
+    conditions:
+      - title~=WIP
+    actions:
+      label:
+        toggle:
+          - wip
+
+  - name: mergeable
+    conditions:
+      - or: *default_branch
+    actions:
+      post_check:
+        success_conditions:
+          # Not a work in progress
+          - "-title~=^(wip|WIP)"
+          - "-label~=(WIP|wip|do-not-merge|do not merge|triage|duplicate|invalid|stale|wontfix|triage|feedback)"
+          - '-draft'
+          # Properly titled and described
+          - "title~=(^[0-9A-Za-z]+)"
+          - body~=[0-9A-Za-z]{10,}
+          - -body~=(Describe high-level what changed)
+          # Has reviews and no changes requested
+          - '#approved-reviews-by>=1'
+          - '#changes-requested-reviews-by>=1'
+          - "#review-threads-unresolved=0"
+          # Checks are passing
+          - "#check-pending=0"
+          - "#status-failure=0"
+          - -status-failure~=^(terratest|terraform)
+          # It's not closed or merged
+          - -merged
+          - -closed
+
+        title: |
+          {% if check_status == "success" %}
+          This PR is ready to be merged
+          {% else %}
+          This PR is not ready to be merged
+          {% endif %}
+        summary: |
+          {% if check_status == "failure" %}
+          Your pull request needs to be updated before it can be merged.
+          {% endif %}
