@@ -47,13 +47,20 @@ shared:
     - "#check-pending=0"
     - "#status-failure=0"
 
+  # Only for terraform files
   require_terraform_checks_passing: &terraform_checks_passing
-    - "check-success=test/bats"
-    - "check-success=test/terratest"
-    - -status-failure~=^(terratest|terraform)
+    - or:
+      - "-files~=\\.tf$"
+      - and:
+        - "check-success=test/bats"
+        - "check-success=test/terratest"
+        - -status-failure~=^(terratest|terraform)$
 
   require_codeowners_checks_passing: &codeowners_checks_passing
-    - "check-success=validate-codeowners"
+    - or:
+      - "-files=CODEOWNERS"
+      - and:
+        - "check-success=validate-codeowners"
 
   # It's not closed or merged
   is_open: &is_open
@@ -68,7 +75,7 @@ shared:
         - -files=README.yaml
       - and:
         - files=README.md
-        - -files=README.yaml
+        - files=README.yaml
 
 pull_request_rules:
   - name: "label automated pull requests"
@@ -82,7 +89,7 @@ pull_request_rules:
   - name: "label automated pull requests that update readme"
     conditions:
       - or: *automated_prs
-      - "files~=README\\.md$"
+      - "files=README.md"
     actions:
       label:
         add:
