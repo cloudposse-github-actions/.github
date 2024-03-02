@@ -83,7 +83,7 @@ pull_request_rules:
   - name: "label automated pull requests"
     conditions:
       - or: *automated_prs
-      - *is_open
+      - and: *is_open
     actions:
       label:
         add:
@@ -91,7 +91,7 @@ pull_request_rules:
 
   - name: "label automated pull requests that update readme"
     conditions:
-      - *is_open
+      - and: *is_open
       - or: *automated_prs
       - "files=README.md"
     actions:
@@ -101,7 +101,7 @@ pull_request_rules:
 
   - name: "run terratest on automated pull requests that update terraform files"
     conditions:
-      - *is_open
+      - and: *is_open
       - or: *automated_prs
       - "files~=\\.tf$"
     actions:
@@ -110,7 +110,7 @@ pull_request_rules:
 
   - name: "merge automated PRs that only update the markdown files, images or videos"
     conditions:
-      - *is_open
+      - and: *is_open
       - "#check-pending=0"
       - "head~=auto-update/.*"
       - or: *default_branch
@@ -131,7 +131,7 @@ pull_request_rules:
 
   - name: "ask to resolve conflict"
     conditions:
-      - *is_open
+      - and: *is_open
       - "conflict"
     actions:
       comment:
@@ -142,7 +142,7 @@ pull_request_rules:
 
   - name: "ask to not edit the readme"
     conditions:
-      - *is_open
+      - and: *is_open
       - files=README.md
       - -files=README.yaml
     actions:
@@ -163,7 +163,7 @@ pull_request_rules:
 
   - name: "ask to rebuild readme"
     conditions:
-      - *is_open
+      - and: *is_open
       - files=README.yaml
       - -files=README.md
     actions:
@@ -184,7 +184,7 @@ pull_request_rules:
 
   - name: "ask for title"
     conditions:
-      - *is_open
+      - and: *is_open
       - -title~=^[0-9A-Za-z]+
     actions:
       comment:
@@ -196,7 +196,7 @@ pull_request_rules:
 
   - name: "ask for description"
     conditions:
-      - *is_open
+      - and: *is_open
       - -body~=[0-9A-Za-z]{10,}
       - body~=(Describe high-level what changed)
     actions:
@@ -209,7 +209,7 @@ pull_request_rules:
 
   - name: "remove outdated reviews"
     conditions:
-      - *is_open
+      - and: *is_open
       - or: *default_branch
     actions:
       dismiss_reviews:
@@ -219,7 +219,7 @@ pull_request_rules:
 
   - name: "remove triage label if approved"
     conditions:
-      - *is_open
+      - and: *is_open
       - '#approved-reviews-by>=1'
     actions:
       label:
@@ -228,17 +228,28 @@ pull_request_rules:
 
   - name: label inactive PRs as stale
     conditions:
-      - *is_open
-      - updated-at<1 month ago
+      - and: *is_open
+      - updated-at < 30 days ago
     actions:
       label:
         toggle: ["stale"]
 
+  - name: close automated PRs with persistent merge conflicts quickly
+    conditions:
+      - and: *is_open
+      - or: *automated_prs
+      - "conflict"
+      - updated-at < 1 days ago
+    actions:
+      close:
+        message: |
+          This automated PR has been closed due to merge conflicts.
+
   - name: close stale PRs with merge conflicts
     conditions:
-      - *is_open
-      - "#files-conflicting>0"
-      - updated-at < 1 months ago
+      - and: *is_open
+      - "conflict"
+      - updated-at < 30 days ago
     actions:
       close:
         message: |
@@ -247,7 +258,7 @@ pull_request_rules:
 
   - name: close stale pull request after 90 days
     conditions:
-      - *is_open
+      - and: *is_open
       - or: *default_branch
       - updated-at < 90 days ago
     actions:
@@ -257,7 +268,7 @@ pull_request_rules:
 
   - name: close pull request waiting on feedback for 1 month
     conditions:
-      - *is_open
+      - and: *is_open
       - or: *default_branch
       - "label~=(feedback)"
       - updated-at < 30 days ago
@@ -269,7 +280,7 @@ pull_request_rules:
 
   - name: close pull request marked as invalid, duplicate or won't fix
     conditions:
-      - *is_open
+      - and: *is_open
       - or: *default_branch
       - "label~=(duplicate|invalid|wontfix)"
     actions:
@@ -280,7 +291,7 @@ pull_request_rules:
 
   - name: close pull request that is a work in progress and in active for 1 month
     conditions:
-      - *is_open
+      - and: *is_open
       - or: *default_branch
       - "label~=(WIP|wip|do-not-merge|do not merge)"
       - updated-at < 30 days ago
@@ -300,7 +311,7 @@ pull_request_rules:
 
   - name: "close Pull Requests without files changed"
     conditions:
-      - *is_open
+      - and: *is_open
       - "#files=0"
     actions:
       label:
@@ -311,7 +322,7 @@ pull_request_rules:
 
   - name: welcome new contributors
     conditions:
-      - *is_open
+      - and: *is_open
       - and: *not_a_bot
     actions:
       comment:
@@ -326,7 +337,7 @@ pull_request_rules:
 
   - name: add triage label for new pull requests
     conditions:
-      - *is_open
+      - and: *is_open
       - '#label=0'
       - or:
         - created-at > 5 minutes ago
@@ -338,7 +349,7 @@ pull_request_rules:
 
   - name: add "WIP" label when the title contains "WIP"
     conditions:
-      - *is_open
+      - and: *is_open
       - title~=WIP
     actions:
       label:
@@ -347,20 +358,19 @@ pull_request_rules:
 
   - name: mergeable
     conditions:
-      - *is_open
+      - and: *is_open
       - or: *default_branch
     actions:
       post_check:
         success_conditions:
           - and:
-            - *not_wip
-            - *pr_metadata
-            - *readme_updated
-            - *is_approved
-            - *checks_passing
-            - *require_terraform_checks_passing
-            - *require_codeowners_checks_passing
-
+            - and: *not_wip
+            - and: *pr_metadata
+            - and: *readme_updated
+            - and: *is_approved
+            - and: *checks_passing
+            - and: *require_terraform_checks_passing
+            - and: *require_codeowners_checks_passing
         title: |
           {% if check_status == "success" %}
           This PR is ready to be merged
