@@ -226,16 +226,69 @@ pull_request_rules:
         remove:
           - triage
 
-  - name: close stale pull request
+  - name: label inactive PRs as stale
+    conditions:
+      - *is_open
+      - updated-at<1 month ago
+    actions:
+      label:
+        toggle: ["stale"]
+
+  - name: close stale PRs with merge conflicts
+    conditions:
+      - *is_open
+      - "#files-conflicting>0"
+      - updated-at < 1 months ago
+    actions:
+      close:
+        message: |
+          This PR has been closed due to inactivity and merge conflicts.
+          Please resolve the conflicts and reopen if necessary.
+
+  - name: close stale pull request after 90 days
     conditions:
       - *is_open
       - or: *default_branch
-      - -closed
-      - updated-at < 30 days ago
+      - updated-at < 90 days ago
     actions:
       close:
         message: |
           This pull request looks stale. Feel free to reopen it if you think it's a mistake.
+
+  - name: close pull request waiting on feedback for 1 month
+    conditions:
+      - *is_open
+      - or: *default_branch
+      - "label~=(feedback)"
+      - updated-at < 30 days ago
+    actions:
+      close:
+        message: |
+          We haven't heard back from you, so we're closing this pull request.
+          Feel free to reopen it if you think it's a mistake.
+
+  - name: close pull request marked as invalid, duplicate or won't fix
+    conditions:
+      - *is_open
+      - or: *default_branch
+      - "label~=(duplicate|invalid|wontfix)"
+    actions:
+      close:
+        message: |
+          This pull request is no longer applicable.
+          Feel free to reopen it if you think it's a mistake.
+
+  - name: close pull request that is a work in progress and in active for 1 month
+    conditions:
+      - *is_open
+      - or: *default_branch
+      - "label~=(WIP|wip|do-not-merge|do not merge)"
+      - updated-at < 30 days ago
+    actions:
+      close:
+        message: |
+          This pull request was marked as a work in progress and looks abandoned.
+          Feel free to reopen it if you think it's a mistake.
 
   - name: remove certain labels on close
     conditions:
