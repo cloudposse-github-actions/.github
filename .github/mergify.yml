@@ -84,6 +84,12 @@ shared:
         - files=README.md
         - files=README.yaml
 
+  needs_cloudposse: &needs_cloudposse
+    - or:
+      - "files~=(mergify|settings|dependabot|renovate|CODEOWNERS|\.github|Makefile|Dockerfile)"
+      - "label~=(cloudposse)"
+
+
 # All the rules for the Pull Request
 pull_request_rules:
   - name: "label automated pull requests"
@@ -382,6 +388,22 @@ pull_request_rules:
       label:
         toggle:
           - wip
+
+  - name: add "needs-cloudposse" label when restrictions apply to this PR
+    conditions:
+      - and: *is_open
+      - and: *needs_cloudposse
+    actions:
+      label:
+        toggle:
+          - needs-cloudposse
+      comment:
+        message: |
+          > [!IMPORTANT]
+          > This pull request modifies files that require Cloud Posse's review.
+          > Please be patient, and a core maintainer will review your changes.
+          > To expedite this process, reach out to us on [Slack](https://slack.cloudposse.com)
+          > in the `#pr-reviews` channel.
 
   - name: rebase pull request when it's more than 10 commits behind main
     conditions:
