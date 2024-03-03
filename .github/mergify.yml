@@ -63,10 +63,16 @@ shared:
       - and:
         - "check-success=validate-codeowners"
 
+  is_terraform: &is_terraform
+    - "files~=\\.tf$"
+
   # It's not closed or merged
   is_open: &is_open
     - -merged
     - -closed
+
+  is_recent_commit: &is_recent_commit
+    - commits[*].date_committer > 1 minutes ago
 
   # README.md is updated together with README.yaml
   readme_updated: &readme_updated
@@ -103,7 +109,7 @@ pull_request_rules:
     conditions:
       - and: *is_open
       - or: *automated_prs
-      - "files~=\\.tf$"
+      - and: *is_terraform
     actions:
       comment:
         message: "/terratest"
@@ -229,7 +235,7 @@ pull_request_rules:
   - name: label inactive PRs as stale
     conditions:
       - and: *is_open
-      - updated-at < 30 days ago
+      - commits[*].date_committer < 30 days ago
     actions:
       label:
         toggle: ["stale"]
@@ -239,7 +245,7 @@ pull_request_rules:
       - and: *is_open
       - or: *automated_prs
       - "conflict"
-      - updated-at < 1 days ago
+      - commits[*].date_committer < 1 days ago
     actions:
       close:
         message: |
@@ -249,7 +255,7 @@ pull_request_rules:
     conditions:
       - and: *is_open
       - "conflict"
-      - updated-at < 30 days ago
+      - commits[*].date_committer < 30 days ago
     actions:
       close:
         message: |
@@ -260,7 +266,7 @@ pull_request_rules:
     conditions:
       - and: *is_open
       - or: *default_branch
-      - updated-at < 90 days ago
+      - commits[*].date_committer < 90 days ago
     actions:
       close:
         message: |
@@ -341,11 +347,32 @@ pull_request_rules:
       - '#label=0'
       - or:
         - created-at > 5 minutes ago
+        - commits[*].date_committer > 5 minutes ago
         - updated-at > 7 days ago
     actions:
       label:
         add:
           - triage
+
+  - name: Add needs-test label on new commits
+    conditions:
+      - and: *is_open
+      - or: *default_branch
+      - and: *is_terraform
+      - and: *is_recent_commit
+      - -label=~needs-test
+    actions:
+      label:
+        add: ["needs-test"]
+
+  - name: Remove needs-test label when required tests pass
+    conditions:
+      - and: *is_open
+      - or: *default_branch
+      - and: *require_terraform_checks_passing
+    actions:
+      label:
+        remove: ["needs-test"]
 
   - name: add "WIP" label when the title contains "WIP"
     conditions:
@@ -355,6 +382,23 @@ pull_request_rules:
       label:
         toggle:
           - wip
+
+  - name: rebase pull request when it's more than 10 commits behind main
+    conditions:
+      - and: *is_open
+      - or: *default_branch
+      - "#commits-behind>=10"
+    actions:
+      rebase:
+
+  - name: rebase pull requests one time when labeled with `rebase`
+    conditions:
+      - label=rebase
+    actions:
+      rebase: {}
+      label:
+        remove:
+          - rebase
 
   - name: mergeable
     conditions:
