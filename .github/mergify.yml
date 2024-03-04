@@ -86,7 +86,7 @@ shared:
 
   needs_cloudposse: &needs_cloudposse
     - or:
-      - "files~=(mergify|settings|dependabot|renovate|CODEOWNERS|\.github|Makefile|Dockerfile)"
+      - "files~=(mergify|settings|dependabot|renovate|CODEOWNERS|\\.github|Makefile|Dockerfile)"
       - "label~=(cloudposse)"
 
 
