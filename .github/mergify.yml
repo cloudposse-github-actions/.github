@@ -33,7 +33,7 @@ shared:
   # Properly titled and described
   pr_metadata: &pr_metadata
     - "title~=(^[0-9A-Za-z]+)"
-    - body~=[0-9A-Za-z]{10,}
+    - body~=[0-9A-Za-z]{3,}\\s+[0-9A-Za-z]{3,}\\s+[0-9A-Za-z]{3,}
     - -body~=(Describe high-level what changed)
 
   # Has reviews and no changes requested
@@ -209,7 +209,7 @@ pull_request_rules:
   - name: "ask for description"
     conditions:
       - and: *is_open
-      - -body~=[0-9A-Za-z]{10,}
+      - -body~=[0-9A-Za-z]{3,}\\s+[0-9A-Za-z]{3,}\\s+[0-9A-Za-z]{3,}
       - body~=(Describe high-level what changed)
     actions:
       comment:
@@ -282,7 +282,10 @@ pull_request_rules:
     conditions:
       - and: *is_open
       - or: *default_branch
-      - "label~=(feedback)"
+      - or:
+        - "label~=(feedback)"
+        - '#commented-reviews-by > 0'
+        - '#changes-requested-reviews-by > 0'
       - updated-at < 30 days ago
     actions:
       close:
@@ -342,6 +345,9 @@ pull_request_rules:
           Thanks @{{author}} for creating this pull request! 
           A maintainer will review your changes shortly.
           Please don't be discouraged if it takes a while.
+
+          While you wait, make sure to review our
+          [contributor guidelines](https://github.com/cloudposse/.github/blob/main/CONTRIBUTING.md).
 
           > [!TIP]
           > ## Need help or want to ask for a PR review to be expedited?
