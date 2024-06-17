@@ -38,22 +38,62 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  ci-readme:
-    uses: cloudposse/github-actions-workflows/.github/workflows/ci-readme.yml@main
+  readme:
+    uses: cloudposse/github-actions-workflows/.github/workflows/ci-readme.yml@shared-workflows
     name: "Readme"
     if: ${{ github.event_name == 'push' }}
     with:
       runs-on: ${{ inputs.runs-on }}
     secrets: inherit
 
-  ci-gha:
-    uses: cloudposse/github-actions-workflows/.github/workflows/ci-github-action.yml@main
-    name: "CI"
-    with:
-      organization: ${{ inputs.organization }}
-      repository: ${{ inputs.repository }}
-      ref: ${{ github.event_name == 'push' && github.ref || github.event.pull_request.head.ref }}
-      tests-prefix: ${{ inputs.tests-prefix }}
+  lint:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: YAML file validation
+        uses: mpoc/nexus-validate-using-remote-schema-action@main
+        with:
+          api-endpoint: https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-action.json
+          yaml-file: action.yml
+
+  context:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Workflows
+        id: workflows
+        shell: bash
+        run: |
+          TEST_FILES=$(find ./.github/workflows -type f -name "${{ inputs.tests-prefix }}" -exec basename {} \; | jq -MRc -s '. | split("\n") | map(select(. != ""))')
+          echo "list=${TEST_FILES}" >> $GITHUB_OUTPUT
+
+    outputs:
+      tests: ${{ steps.workflows.outputs.list }}
+
+  test:
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    if: ${{ needs.context.outputs.tests != '[]'  }}
+    strategy:
+      matrix:
+        env: ${{ fromJson(needs.context.outputs.tests) }}
+    needs: [ lint, context ]
+    steps:
+      - uses: convictional/trigger-workflow-and-wait@v1.6.5
+        with:
+          owner: ${{ inputs.organization }}
+          repo: ${{ inputs.repository }}
+          github_token: ${{ github.token }}
+          workflow_file_name: ${{ matrix.env }}
+          ref: ${{ github.event_name == 'push' && github.ref || github.event.pull_request.head.ref }}
+          wait_interval: 10
+          client_payload: '{}'
+          propagate_failure: true
+          trigger_workflow: true
+          wait_workflow: true
 
   ci:
     runs-on: ${{ fromJSON(inputs.runs-on) }}
@@ -62,7 +102,7 @@ jobs:
       - run: |
           echo '${{ toJSON(needs) }}'  # easier debug
           ! ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
-    needs: [ ci-gha, ci-readme ]
+    needs: [ lint, test, readme ]
 
   release:
     needs: [ ci ]
