@@ -105,9 +105,9 @@ jobs:
     needs: [ lint, test, readme ]
 
   release:
-    needs: [ lint, readme ]
+    needs: [ ci ]
     name: "release"
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ always() && github.event_name == 'push' && needs.ci.result == 'success' }}
     uses: cloudposse/.github/.github/workflows/shared-auto-release.yml@main
     with:
       publish: ${{ inputs.publish }}
