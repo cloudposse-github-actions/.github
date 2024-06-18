@@ -40,7 +40,7 @@ concurrency:
 jobs:
   readme:
     uses: cloudposse/github-actions-workflows/.github/workflows/ci-readme.yml@main
-    name: "Readme"
+    name: "readme"
     if: ${{ github.event_name == 'push' }}
     with:
       runs-on: ${{ inputs.runs-on }}
@@ -106,7 +106,7 @@ jobs:
 
   release:
     needs: [ ci ]
-    name: "Release"
+    name: "release"
     if: ${{ github.event_name == 'push' }}
     uses: cloudposse/.github/.github/workflows/shared-auto-release.yml@main
     with:
