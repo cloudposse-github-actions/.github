@@ -14,7 +14,7 @@ jobs:
     uses: cloudposse-github-actions/.github/.github/workflows/shared-readme.yml@main
     name: "readme"
     with:
-      runs-on: ${{ inputs.runs-on }}
+      runs-on: '["ubuntu-latest"]'
     secrets: inherit
 
   scaffolding:
