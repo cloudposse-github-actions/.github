@@ -11,24 +11,11 @@ permissions:
 
 jobs:
   readme:
-    runs-on: ubuntu-latest
-    environment: security
-    steps:
-      - uses: actions/create-github-app-token@v1
-        id: github-app
-        with:
-          app-id: ${{ vars.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: cloudposse-github-actions/readme@main
-        with:
-          token: ${{ steps.github-app.outputs.token }}
-          readme_enabled: true
-          banner_enabled: true
-          commit_method: 'pr'
+    uses: cloudposse-github-actions/.github/.github/workflows/shared-readme.yml@main
+    name: "readme"
+    with:
+      runs-on: ${{ inputs.runs-on }}
+    secrets: inherit
 
   scaffolding:
     runs-on: ubuntu-latest

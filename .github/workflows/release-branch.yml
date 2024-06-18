@@ -23,63 +23,19 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  ci-readme:
-    runs-on: ubuntu-latest
-    environment: release
-    steps:
-      - uses: actions/create-github-app-token@v1
-        id: github-app
-        with:
-          app-id: ${{ vars.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ steps.github-app.outputs.token }}
-      - uses: cloudposse-github-actions/readme@main
-        with:
-          token: ${{ steps.github-app.outputs.token }}
-          readme_enabled: true
-          banner_enabled: true
-          validate_readme: true
-          commit_method: 'commit'
-          commit_push_options: '--force-with-lease'
+  readme:
+    uses: cloudposse-github-actions/.github/.github/workflows/shared-readme.yml@main
+    name: "readme"
+    if: ${{ github.event_name == 'push' }}
+    with:
+      runs-on: ${{ inputs.runs-on }}
+    secrets: inherit
 
-  release-controller:
-    runs-on: ubuntu-latest
-    needs: [ci-readme]
-    permissions:
-      # write permission is required to create a github release
-      contents: write
-      # write permission is required for autolabeler
-      # otherwise, read permission is required at least
-      pull-requests: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Draft release
-        id: release
-        uses: cloudposse/github-action-auto-release@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          config-name: auto-release.yml
-
-  major-release-tagger:
-    runs-on: ubuntu-latest
-    needs: [release-controller]
-    steps:
-      - uses: cloudposse/github-action-major-release-tagger@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-  release-branch-manager:
-    runs-on: ubuntu-latest
-    needs: [release-controller]
-    steps:
-      - uses: cloudposse/github-action-release-branch-manager@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+  release:
+    needs: [ readme ]
+    name: "release"
+    if: ${{ always() && github.event_name == 'push' && needs.ci.result == 'success' }}
+    uses: cloudposse-github-actions/.github/.github/workflows/shared-auto-release.yml@main
+    with:
+      publish: ${{ inputs.publish }}
+    secrets: inherit
