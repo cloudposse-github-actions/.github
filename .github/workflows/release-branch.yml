@@ -25,16 +25,14 @@ concurrency:
 jobs:
   readme:
     uses: cloudposse-github-actions/.github/.github/workflows/shared-readme.yml@main
-    name: "readme"
-    if: ${{ github.event_name == 'push' }}
+    name: "ci"
     with:
       runs-on: '["ubuntu-latest"]'
     secrets: inherit
 
   release:
     needs: [ readme ]
-    name: "release"
-    if: ${{ always() && github.event_name == 'push' }}
+    name: "ci"
     uses: cloudposse-github-actions/.github/.github/workflows/shared-auto-release.yml@main
     with:
       publish: ${{ inputs.publish }}
