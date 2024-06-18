@@ -10,19 +10,6 @@ permissions:
   deployments: write
   
 jobs:
-  publish:
-    runs-on: ubuntu-latest
-    environment: release
-    concurrency: release
-    steps:
-      - uses: actions/create-github-app-token@v1
-        id: github-app
-        with:
-          app-id: ${{ vars.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: cloudposse/github-action-major-release-tagger@v1
-        env:
-          GITHUB_ENV: ${{ steps.github-app.outputs.token }}
-      - uses: cloudposse/github-action-release-branch-manager@v1
-        with:
-          token: ${{ steps.github-app.outputs.token }}
+  perform:
+    uses: cloudposse-github-actions/.github/.github/workflows/shared-release-branches.yml@main
+    secrets: inherit
