@@ -34,7 +34,7 @@ jobs:
   release:
     needs: [ readme ]
     name: "release"
-    if: ${{ always() && github.event_name == 'push' && needs.ci.result == 'success' }}
+    if: ${{ always() && github.event_name == 'push' }}
     uses: cloudposse-github-actions/.github/.github/workflows/shared-auto-release.yml@main
     with:
       publish: ${{ inputs.publish }}
