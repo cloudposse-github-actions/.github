@@ -1,0 +1,4 @@
+cloudposse-github-actions/test-action
+cloudposse-github-actions/typescript-template
+cloudposse-github-actions/string-transformer
+cloudposse-github-actions/composite-template
