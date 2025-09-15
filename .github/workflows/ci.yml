@@ -18,6 +18,16 @@ on:
         required: false
         type: string
         default: 'test-*'
+      ref:
+        description: "The fully-formed ref of the branch or tag that triggered the workflow run"
+        required: false
+        default: ${{ github.ref }}
+        type: string
+      sha:
+        description: "The sha of the commit that triggered the workflow run"
+        required: false
+        default: ${{ github.sha }}
+        type: string        
       publish:
         description: "Whether to publish a new release immediately"
         required: false
@@ -90,7 +100,7 @@ jobs:
           workflow_file_name: ${{ matrix.env }}
           ref: ${{ github.event_name == 'push' && github.ref || github.event.pull_request.head.ref }}
           wait_interval: 10
-          client_payload: '{}'
+          client_payload: '{"ref":"${{ inputs.ref }}","sha":"${{ inputs.sha }}"}'
           propagate_failure: true
           trigger_workflow: true
           wait_workflow: true
