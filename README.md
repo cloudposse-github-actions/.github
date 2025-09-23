@@ -1,5 +1,7 @@
+
+
 <!-- markdownlint-disable -->
-<a href="https://cpco.io/homepage"><img src=".github/banner.png?raw=true" alt="Project Banner"/></a><br/>
+<a href="https://cpco.io/homepage"><img src="https://github.com/cloudposse-github-actions/.github/blob/main/.github/banner.png?raw=true" alt="Project Banner"/></a><br/>
     <p align="right">
 <a href="https://github.com/cloudposse-github-actions/.github/commits/main/"><img src="https://img.shields.io/github/last-commit/cloudposse-github-actions/.github/main?style=for-the-badge" alt="Last Update"/></a><a href="https://slack.cloudposse.com"><img src="https://slack.cloudposse.com/for-the-badge.svg" alt="Slack Community"/></a></p>
 <!-- markdownlint-restore -->
@@ -42,17 +44,8 @@ This repository fulfills several unique functions functions for the Cloud Posse 
     - **[`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md)** - pull request template for the project
 
 
----
-> [!NOTE]
-> This project is part of Cloud Posse's comprehensive ["SweetOps"](https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=) approach towards DevOps.
-> <details><summary><strong>Learn More</strong></summary>
->
-> It's 100% Open Source and licensed under the [APACHE2](LICENSE).
->
-> We have [*dozens of GitHub Actions*](https://github.com/cloudposse-github-actions?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=github_actions) that are Open Source and well-maintained. Check them out!
-> </details>
 
-<a href="https://cloudposse.com/readme/header/link?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=readme_header_link"><img src="https://cloudposse.com/readme/header/img"/></a>
+
 
 
 
@@ -68,20 +61,16 @@ This repository fulfills several unique functions functions for the Cloud Posse 
 ## ✨ Contributing
 
 This project is under active development, and we encourage contributions from our community.
+
+
+
 Many thanks to our outstanding contributors:
 
 <a href="https://github.com/cloudposse-github-actions/.github/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=cloudposse-github-actions/.github&max=24" />
 </a>
 
-### 🐛 Bug Reports & Feature Requests
-
-Please use the [issue tracker](https://github.com/cloudposse-github-actions/.github/issues) to report any bugs or file feature requests.
-
-### 💻 Developing
-
-If you are interested in being a contributor and want to get involved in developing this project or help out with Cloud Posse's other projects, we would love to hear from you! 
-Hit us up in [Slack](https://cpco.io/slack?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=slack), in the `#cloudposse` channel.
+For 🐛 bug reports & feature requests, please use the [issue tracker](https://github.com/cloudposse-github-actions/.github/issues).
 
 In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
  1. Review our [Code of Conduct](https://github.com/cloudposse-github-actions/.github/?tab=coc-ov-file#code-of-conduct) and [Contributor Guidelines](https://github.com/cloudposse/.github/blob/main/CONTRIBUTING.md).
@@ -104,40 +93,8 @@ Dropped straight into your Inbox every week — and usually a 5-minute read.
 
 ### 📆 Office Hours <a href="https://cloudposse.com/office-hours?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=office_hours"><img src="https://img.cloudposse.com/fit-in/200x200/https://cloudposse.com/wp-content/uploads/2019/08/Powered-by-Zoom.png" align="right" /></a>
 
-[Join us every Wednesday via Zoom](https://cloudposse.com/office-hours?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=office_hours) for your weekly dose of insider DevOps trends, AWS news and GitHub Action insights, all sourced from our SweetOps community, plus a _live Q&A_ that you can’t find anywhere else.
+[Join us every Wednesday via Zoom](https://cloudposse.com/office-hours?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=office_hours) for your weekly dose of insider DevOps trends, AWS news and Terraform insights, all sourced from our SweetOps community, plus a _live Q&A_ that you can’t find anywhere else.
 It's **FREE** for everyone!
-
-## About
-
-This project is maintained by <a href="https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=">Cloud Posse, LLC</a>.
-<a href="https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content="><img src="https://cloudposse.com/logo-300x69.svg" align="right" /></a>
-
-We are a [**DevOps Accelerator**](https://cpco.io/commercial-support?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=commercial_support) for funded startups and enterprises.
-Use our ready-to-go terraform architecture blueprints for AWS & GitHub Actions to get up and running quickly.
-We build it with you. You own everything. Your team wins. Plus, we stick around until you succeed.
-
-<a href="https://cpco.io/commercial-support?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=commercial_support"><img alt="Learn More" src="https://img.shields.io/badge/learn%20more-success.svg?style=for-the-badge"/></a>
-
-*Your team can operate like a pro today.*
-
-Ensure that your team succeeds by using our proven process and turnkey blueprints. Plus, we stick around until you succeed.
-
-<details>
-  <summary>📚 <strong>See What's Included</strong></summary>
-
-- **Reference Architecture.** You'll get everything you need from the ground up built using 100% infrastructure as code.
-- **Deployment Strategy.** You'll have a battle-tested deployment strategy using GitHub Actions that's automated and repeatable.
-- **Site Reliability Engineering.** You'll have total visibility into your apps and microservices.
-- **Security Baseline.** You'll have built-in governance with accountability and audit logs for all changes.
-- **GitOps.** You'll be able to operate your infrastructure via Pull Requests.
-- **Training.** You'll receive hands-on training so your team can operate what we build.
-- **Questions.** You'll have a direct line of communication between our teams via a Shared Slack channel.
-- **Troubleshooting.** You'll get help to triage when things aren't working.
-- **Code Reviews.** You'll receive constructive feedback on Pull Requests.
-- **Bug Fixes.** We'll rapidly work with you to fix any bugs in our projects.
-</details>
-
-<a href="https://cloudposse.com/readme/commercial-support/link?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-github-actions/.github&utm_content=readme_commercial_support_link"><img src="https://cloudposse.com/readme/commercial-support/img"/></a>
 ## License
 
 <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge" alt="License"></a>
@@ -172,6 +129,8 @@ under the License.
 ## Trademarks
 
 All other trademarks referenced herein are the property of their respective owners.
+
+
 ## Copyrights
 
 Copyright © 2022-2025 [Cloud Posse, LLC](https://cloudposse.com)
