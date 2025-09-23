@@ -51,7 +51,8 @@ jobs:
   readme:
     uses: cloudposse-github-actions/.github/.github/workflows/shared-readme.yml@main
     name: "readme"
-    if: ${{ github.event_name == 'push' }}
+    # if: ${{ github.event_name == 'push' }}
+    if: false
     with:
       runs-on: ${{ inputs.runs-on }}
     secrets: inherit
